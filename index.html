@@ -1,0 +1,294 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Устройство системного блока</title>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d1b24;--pn:#15303d;--ln:#2a4c5c;--tx:#e7f0f3;--mu:#9fb7c1;--ac:#ffb703;--ok:#5fd38d;--er:#ff6b6b;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--tx);font:15px/1.5 Onest,system-ui,sans-serif;display:grid;grid-template-rows:auto 1fr auto;overflow:hidden}
+header{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--ln)}
+h1{font-size:19px;font-weight:800;margin:0}h2{font-size:20px;margin:0 0 8px}
+button{font:inherit;background:var(--pn);color:var(--tx);border:1px solid var(--ln);border-radius:8px;padding:7px 11px;cursor:pointer}
+button:hover{border-color:var(--ac)}button.on{border-color:var(--ac);color:var(--ac)}button.pri{background:var(--ac);color:#231a00;border-color:var(--ac);font-weight:600}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+main{display:grid;grid-template-columns:1fr 360px;min-height:0}
+#stage{position:relative;min-height:0;overflow:hidden}#cv{width:100%;height:100%;display:block;touch-action:none}
+aside{overflow:auto;padding:14px;border-left:1px solid var(--ln);background:var(--pn)}
+aside h3{font-size:14px;margin:12px 0 2px;color:var(--ac)}aside p{margin:0}.mu{color:var(--mu)}
+.bt{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 8px}#x{margin-top:6px}#x button{margin:3px 3px 0 0}
+footer{display:flex;flex-wrap:wrap;gap:6px;padding:8px 14px;border-top:1px solid var(--ln)}footer .sp{flex:1}
+#tip{position:fixed;pointer-events:none;background:#000d;border:1px solid var(--ac);border-radius:8px;padding:6px 10px;max-width:250px;font-size:13px;display:none;z-index:5}
+#toast{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);padding:9px 16px;border-radius:10px;background:#000c;display:none;z-index:4;text-align:center}
+#toast.ok{border:1px solid var(--ok);color:var(--ok)}#toast.err{border:1px solid var(--er);color:var(--er)}
+#banner{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:#000a;border-radius:20px;padding:4px 16px;display:none;pointer-events:none;white-space:nowrap}
+#help{position:absolute;left:10px;bottom:10px;background:#000a;border-radius:10px;padding:8px 12px;font-size:12px;line-height:1.6;pointer-events:none}
+#lbls div{position:absolute;transform:translate(-50%,-50%);background:#000b;border:1px solid var(--ln);border-radius:6px;padding:0 6px;font-size:12px;pointer-events:none;white-space:nowrap}
+#start{position:absolute;inset:0;background:#0d1b24ee;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;z-index:6;padding:20px}
+#start h1{font-size:clamp(28px,6vw,52px)}#start button{width:min(300px,90%);padding:12px}
+#err[hidden]{display:none}#err{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);z-index:9;padding:24px;text-align:center;font-size:18px}
+.fl{display:flex;flex-direction:column;align-items:stretch;gap:2px;margin:10px 0}.fl button,.fl span{text-align:center}.fl i{text-align:center;font-style:normal;color:var(--ac);animation:fl 1s infinite}
+@keyframes fl{0%{transform:translateY(-3px);opacity:.3}50%{opacity:1}100%{transform:translateY(3px);opacity:.3}}
+#showui{position:fixed;right:10px;top:10px;z-index:8;display:none}
+#author{position:fixed;left:10px;bottom:10px;z-index:10;font-size:11px;color:var(--mu);background:#000a;padding:4px 9px;border-radius:8px;display:flex;gap:6px;align-items:center;pointer-events:auto}
+#author a{color:var(--ac);text-decoration:none}
+#author a:hover{text-decoration:underline}
+.photo-box{margin:10px 0;border-radius:8px;overflow:hidden;border:1px solid var(--ln);background:#000;text-align:center}
+.photo-box img{width:100%;max-height:180px;object-fit:cover;display:block;cursor:pointer;transition:transform 0.2s}
+.photo-box img:hover{transform:scale(1.03)}
+.photo-cap{font-size:11px;color:var(--mu);padding:4px 8px;background:rgba(0,0,0,0.4)}
+@media(max-width:820px){#author{font-size:10px;padding:3px 7px}}
+body.bare header,body.bare aside,body.bare footer,body.bare #help{display:none}body.bare main{grid-template-columns:1fr}body.bare #showui{display:block}
+@media(max-width:820px){main{grid-template-columns:1fr;grid-template-rows:56% 44%}aside{border-left:0;border-top:1px solid var(--ln)}#help{display:none}}
+@media(prefers-reduced-motion:reduce){.fl i{animation:none}}
+</style></head><body>
+<header><h1>Устройство системного блока</h1><nav id="modes"><button data-m="free">Свободный режим</button> <button data-m="learn">Режим обучения</button> <button data-m="test">Проверь себя</button> <button data-m="teacher">Учитель</button></nav></header>
+<div id="author">@kabidenovv · <a href="https://t.me/kabidenovv" target="_blank" rel="noopener noreferrer">tg</a> / <a href="https://instagram.com/kabidenovv" target="_blank" rel="noopener noreferrer">inst</a></div>
+<main><div id="stage"><canvas id="cv"></canvas><div id="lbls"></div><div id="banner">Внутреннее устройство системного блока</div>
+<div id="help"><b>Управление</b><br>🖱 Левая кнопка — вращение<br>🖱 Колесо — приближение<br>🖱 Правая кнопка — перемещение<br>🖱 Нажатие на компонент — информация</div><div id="toast"></div>
+<div id="start"><h1>УСТРОЙСТВО СИСТЕМНОГО БЛОКА</h1><p class="mu">Интерактивный 3D-симулятор</p><button class="pri" data-s="learn">Начать обучение</button><button data-s="free">Свободное изучение</button><button data-s="test">Проверить знания</button></div>
+<div id="err" hidden>Не удалось загрузить 3D-модель. Попробуйте обновить страницу или использовать современный браузер.</div></div>
+<aside id="p"></aside></main>
+<footer><button class="pri" id="bOpen">Открыть корпус</button><button id="bEx">Разобрать ПК</button><button id="bNames">Показать названия компонентов</button><button id="bFlow">Как компоненты взаимодействуют</button>
+<span class="sp"></span><button data-v="over">Обзор</button><button data-v="front">Вид спереди</button><button data-v="back">Вид сзади</button><button data-v="left">Вид слева</button><button data-v="right">Вид справа</button><button data-v="top">Вид сверху</button><button id="bReset">Сброс</button><button id="bHide">Скрыть интерфейс</button></footer>
+<button id="showui">Показать интерфейс</button><div id="tip"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+try{main()}catch(e){console.error(e);$('#err').hidden=false;$('#err').insertAdjacentHTML('beforeend','<br><small style="color:#9fb7c1">v3 · '+String(e&&e.message||e)+'</small>')}
+function main(){
+if(!window.THREE)throw new Error('Не загрузился three.min.js');if(!THREE.OrbitControls)throw new Error('Не загрузился OrbitControls');
+const V=THREE.Vector3,R=new THREE.WebGLRenderer({canvas:$('#cv'),antialias:true});R.setPixelRatio(Math.min(devicePixelRatio,2));
+const S=new THREE.Scene();S.background=new THREE.Color(0x0d1b24);const C=new THREE.PerspectiveCamera(42,1,.1,100);C.position.set(6.5,3.2,9);
+S.add(new THREE.HemisphereLight(0xcfe6ff,0x1a2a33,1));const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(5,8,7);S.add(dl);const pl=new THREE.PointLight(0xffd9a0,.7,25);pl.position.set(0,1,4);S.add(pl);
+const grid=new THREE.GridHelper(24,24,0x2a4c5c,0x1b3441);grid.position.y=-2.7;S.add(grid);
+const ctl=new THREE.OrbitControls(C,R.domElement);ctl.enableDamping=true;ctl.minDistance=1.5;ctl.maxDistance=32;ctl.target.set(.5,0,0);
+const M=(c,m=.4,r=.6,t)=>new THREE.MeshStandardMaterial({color:c,metalness:m,roughness:r,transparent:t!=null,opacity:t==null?1:t});
+const add=(g,geo,c,x=0,y=0,z=0,m,r,t)=>{const o=new THREE.Mesh(geo,M(c,m,r,t));o.position.set(x,y,z);g.add(o);return o};
+const B=(w,h,d)=>new THREE.BoxGeometry(w,h,d),Y=(r,h)=>new THREE.CylinderGeometry(r,r,h,24);
+
+// URL с качественными фото компонентов
+const IMGS={
+board:'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80',
+cpu:'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80',
+ram1:'https://images.unsplash.com/photo-1562976540-1502c2145186?auto=format&fit=crop&w=600&q=80',
+gpu:'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=600&q=80',
+psu:'https://images.unsplash.com/photo-1587202372616-843b8a4f6908?auto=format&fit=crop&w=600&q=80',
+ssd:'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=600&q=80',
+hdd:'https://images.unsplash.com/photo-1531492746076-161ca9bcad58?auto=format&fit=crop&w=600&q=80',
+cooler:'https://images.unsplash.com/photo-1544652478-6653e09f18a2?auto=format&fit=crop&w=600&q=80',
+fan1:'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80',
+cmos:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/CR2032_battery.jpg/600px-CR2032_battery.jpg'
+};
+
+// ---- данные: [название, подпись, подсказка, что это, для чего, где, с чем, связи, слот, разбор]
+const D={
+board:['Материнская плата','MB','Соединяет все компоненты между собой.','Основная плата компьютера, которая соединяет между собой процессор, оперативную память, накопители, видеокарту и другие устройства. Имеет цепи питания (VRM), чипсет и многочисленные порты ввода-вывода.','Обеспечивает взаимодействие всех узлов ПК и передачу данных между ними по скоростным шинам.','На задней стенке корпуса. К ней подключено почти всё остальное.','Процессор, RAM, видеокарта, накопители, блок питания.',['cpu','ram1','ram2','gpu','ssd','c24'],0,[0,0,0]],
+cpu:['Процессор (CPU)','CPU','Выполняет команды программ.','Процессор — "мозг" компьютера. Выполняет арифметические и логические операции, обрабатывает команды программ. Состоит из миллионов микроскопических транзисторов.','Выполняет вычисления, управляет операциями и выполнением инструкций ПО.','В сокете материнской платы, закрыт металической прижимной рамкой и кулером.','Материнская плата, кулер, оперативная память.',['board','cooler','ram1','ram2'],'Сокет процессора',[0,0,.7]],
+ram1:['Оперативная память (RAM)','RAM','Временное хранение данных, используемых компьютером.','Энергозависимая память быстрого доступа. В ней хранятся запущенные программы и текущие данные, обрабатываемые процессором.','Позволяет процессору мгновенно считывать и записывать нужные в данный момент данные.','В DIMM-слотах справа от процессора.','Процессор, материнская плата, накопители.',['cpu','board','ssd'],'DIMM-слот',[0,.3,.7]],
+gpu:['Видеокарта (GPU)','GPU','Формирует изображение для монитора.','Графический ускоритель со собственным процессором (GPU) и быстрой видеопамятью (VRAM). Рассчитывает 3D-графику и выводит видеосигнал.','Используется для обработки графики, игр, 3D-моделирования и нейросетей.','В верхнем слоте PCI Express x16 под процессором.','Материнская плата (PCI Express), блок питания, монитор.',['board','psu','cgpu'],'Слот PCI Express x16',[0,-.3,1.6]],
+psu:['Блок питания (PSU)','PSU','Питает все компоненты компьютера.','Импульсный источник питания, преобразующий высокое переменное напряжение из розетки (220В) в постоянное низкое напряжение (12В, 5В, 3.3В).','Обеспечивает безопасное и стабильное электрическое питание всех узлов ПК.','Внизу корпуса, в изолированном отсеке (кожухе).','Все компоненты — через кабели питания.',['board','gpu','c24','c8'],'Отсек блока питания',[0,0,.9]],
+ssd:['SSD NVMe / SATA-накопитель','SSD','Быстрое хранение системы и файлов.','Твердотельный накопитель на основе микросхем флеш-памяти NAND. Не имеет подвижных механических частей, за счет чего работает в десятки раз быстрее жестких дисков.','Хранит ОС, программы и данные постоянным образом.','В слоте M.2 на материнской плате или в корзине 2.5".','Материнская плата, блок питания.',['csata','board','psu'],'Слот M.2 / Отсек 2,5″',[0,-.2,1]],
+hdd:['Жёсткий диск (HDD)','HDD','Долговременное хранение больших объёмов данных.','Магнитный накопитель с вращающимися шпинделями и считывающими головками. Позволяет недорого хранить больший объем информации.','Хранит резервные копии, медиафайлы и архивы.','В корзине накопителей у передней стенки корпуса.','Материнская плата (SATA), блок питания.',['csata','board','psu'],'Отсек 3,5″ для накопителя',[0,.1,.6]],
+cooler:['Система охлаждения (Кулер)','Кулер','Отводит тепло от процессора.','Конструкция из медного основания, тепловых трубок и алюминиевых пластин (радиатора), обдуваемая вентилятором.','Эффективно рассеивает тепло, выделяемое процессором во время работы.','Установлена прямо поверх процессора.','Процессор, материнская плата (разъём CPU_FAN).',['cpu','fan1','fan2'],'Крепление на сокете процессора',[0,.7,1.6]],
+fan1:['Корпусной вентилятор','Вентилятор','Обеспечивает циркуляцию воздуха.','Вентилятор для выдува горячего или вдува холодного воздуха. Создает сквозной воздушный поток внутри корпуса.','Предотвращает перегрев всех внутренних компонентов системного блока.','Спереди (впуск) и на задней стенке (выпуск).','Кулер, видеокарта, корпус.',['cooler','cpu','gpu'],0,[0,0,1]],
+cmos:['Батарейка CMOS (CR2032)','CMOS','Питает энергонезависимую память BIOS.','Литиевая батарейка напряжением 3 Вольта. Питает микросхему CMOS-памяти и встроенные часы (RTC).','Благодаря ей ПК сохраняет настройки BIOS и точное время даже после отключения от розетки.','На материнской плате около слотов PCI Express.','Материнская плата.',['board'],'Гнездо батарейки на плате',[0,0,1]],
+c24:['Кабель питания платы (24 pin)','24 pin','Главный шлейф питания.','Широкий 24-контактный кабель стандарта ATX для подачи питания на шины материнской платы.','Питает текстолит платы, чипсет, логику и слоты расширения.','От блока питания к правому краю материнской платы.','Блок питания, материнская плата.',['psu','board'],0,[0,0,.8]],
+c8:['Кабель питания процессора (8 pin)','CPU 8 pin','Дополнительное питание процессора.','Кабель питания 12V для выделенной линии питания VRM процессора.','Предоставляет необходимую мощность мощным процессорам.','От блока питания в верхний левый угол материнской платы.','Блок питания, процессор.',['psu','cpu'],0,[0,0,.8]],
+cgpu:['Кабель питания видеокарты (PCIe)','GPU 8 pin','Питание мощной видеокарты.','Дополнительные кабели питания (6+2 pin) для компенсации энергопотребления видеокарты.','Подает питание, если видеокарте не хватает 75 Вт от слота PCIe.','От блока питания к боковой грани видеокарты.','Блок питания, видеокарта.',['psu','gpu'],0,[0,0,.8]],
+csata:['Интерфейсный кабель SATA','SATA','Передача данных накопителей.','Высокоскоростной кабель передачи данных между материнской платой и HDD/SSD.','Передает информацию со скоростью до 6 Гбит/с.','От дисков к разъемам SATA на плате.','SSD/HDD, материнская плата.',['ssd','hdd','board'],0,[0,0,.8]],
+cfp:['Кабели передней панели','Перед. панель','Кнопка Power, USB и аудио.','Набор тонких проводов для подключения кнопок включения, перезагрузки, диодов и фронтальных портов.','Передают сигнал включения и связывают внешние разъемы с платой.','От передней панели вниз материнской платы.','Материнская плата.',['board'],0,[0,0,.8]]};
+D.ram2=[...D.ram1];D.ram2[1]='RAM 2';D.fan2=[...D.fan1];D.fan2[9]=[0,0,1];
+const K={},order=[],picks=[],spin=[];
+function mk(id,x,y,z){const d=D[id],g=new THREE.Group();g.position.set(x,y,z);S.add(g);K[id]={id,g,home:g.position.clone(),n:d[0],l:d[1],tip:d[2],what:d[3],why:d[4],where:d[5],w:d[6],rel:d[7],slot:d[8],ext:!!d[8],st:'in',exp:new V(...d[9])};order.push(id);return g}
+function fan(g,ax,r,x,y,z){const s=new THREE.Group();s.position.set(x,y,z);for(let i=0;i<7;i++){const p=new THREE.Group();add(p,ax=='x'?B(.03,r*.85,r*.3):B(r*.3,r*.85,.03),0x99aabb,0,r*.45,0,.2,.5);p.rotation[ax]=i*Math.PI*2/7;s.add(p)}
+const t=add(s,new THREE.TorusGeometry(r,.03,6,24),0x222222);if(ax=='x')t.rotation.y=Math.PI/2;g.add(s);spin.push([s,ax])}
+function cable(id,pts,col){const P=pts.map(p=>new V(...p)),m=P[1].clone().lerp(P[2],.5),g=mk(id,m.x,m.y,m.z);add(g,new THREE.TubeGeometry(new THREE.CatmullRomCurve3(P.map(p=>p.clone().sub(m))),30,.05,6),col,0,0,0,.1,.7)}
+
+// --- 3D Корпус ПК ---
+const shell=new THREE.Group();S.add(shell);
+add(shell,B(4.2,.08,2.4),0x2b3a44,0,2.6,.02);add(shell,B(4.2,.08,2.4),0x2b3a44,0,-2.6,.02);add(shell,B(4.2,5.28,.08),0x27343d,0,0,-1.16);
+add(shell,B(.1,5.2,2.4),0x1f2b33,2.05,0,.02);add(shell,B(.1,5.2,2.4),0x2b3a44,-2.05,0,.02);add(shell,B(.02,.3,.9),0xffb703,2.11,2,0);
+// Кожух блока питания
+add(shell,B(2.5,1.1,2.2),0x18242c,-.8,-1.95,0);
+[1.3,.3].forEach(y=>add(shell,B(.12,.3,.6),0x111111,-2.06,y,-.6));
+for(let i=0;i<10;i++)for(let j=0;j<3;j++)add(shell,B(.03,.03,.09),0x0e1a20,2.111,1.7-i*.28,-.3+j*.28,.2,.6);
+add(shell,Y(.14,.03),0x1a232a,2.1,-1.8,0,.4,.4).rotation.z=Math.PI/2;
+const door=new THREE.Group();door.position.set(-2.1,0,1.2);add(door,B(4.2,5.2,.05),0x88aacc,2.1,0,0,.1,.2,.35);shell.add(door);
+
+// --- ДЕТАЛИЗИРОВАННЫЕ КОМПОНЕНТЫ ---
+// Материнская плата
+let g=mk('board',-.35,.5,-1);
+add(g,B(2.7,3.4,.06),0x1a2e22); // Текстолит
+// Радиаторы VRM (питания)
+add(g,B(.4,1.1,.3),0x333d45,-1,.8,.15,.8,.2);
+add(g,B(.8,.35,.3),0x333d45,-.3,1.4,.15,.8,.2);
+// Чипсет с радиатором
+add(g,B(.6,.6,.12),0x445566,.5,-.8,.08,.7,.3);
+// Слоты PCI Express
+add(g,B(1.8,.08,.12),0x111111,0,-.15,.07); // PCIe x16 главный
+add(g,B(1.2,.06,.1),0x111111,-.3,-.55,.06); // PCIe x1
+add(g,B(1.8,.08,.12),0x222222,0,-.95,.07); // PCIe x16 второй
+// Накопитель M.2 NVMe с радиатором на самой плате
+add(g,B(.8,.2,.05),0x222222,.2,.15,.06);
+add(g,B(.7,.18,.04),0xaa2222,.2,.15,.09,.6,.4);
+// Порты ввода-вывода (Задняя панель)
+add(g,B(.2,2.2,.35),0xcccccc,-1.25,.5,.18,.9,.1);
+// Конденсаторы и слоты DIMM
+for(let i=0;i<6;i++)add(g,Y(.035,.1),0x888888,-.75+i*.07,1.1,.08,.8,.2);
+for(let i=0;i<4;i++)add(g,B(.06,1.5,.12),0x111111,.45+i*.12,.8,.07);
+
+// Процессор (CPU)
+g=mk('cpu',-.6,1.1,-.95);
+add(g,B(.58,.58,.04),0x225533,0,0,-.02,.2,.7); // Подложка
+add(g,B(.48,.48,.045),0xd0d5dd,0,0,.025,.9,.1); // Металлическая крышка (IHS)
+add(g,B(.06,.06,.012),0xffb703,-.21,-.21,.05,.3,.4).rotation.z=Math.PI/4; // Золотой треугольник-ключ
+
+// Кулер процессора (Башенный)
+g=mk('cooler',-.6,1.1,-.62);
+add(g,B(.8,.8,.12),0xc87d55,0,0,0,.9,.1); // Медное основание
+// Медные тепловые трубки
+for(let i=0;i<4;i++){
+  const ht=add(g,Y(.025,.65),0xd88d65,-.25+i*.16,.1,.1,.9,.2);
+  ht.rotation.x=Math.PI/2;
+}
+// Алюминиевые пластины радиатора
+for(let i=0;i<12;i++)add(g,B(.78,.78,.018),0xaaaaaa,0,0,.05+i*.035,.7,.3);
+fan(g,'z',.28,0,0,.5);
+
+// Оперативная память (RAM 1 & 2)
+[['ram1',.57],['ram2',.69]].forEach(([id,x])=>{
+  g=mk(id,x,1.3,-.82);
+  add(g,B(.05,1.35,.28),0x111111,0,0,0,.5,.4); // Радиатор планки
+  add(g,B(.06,1.32,.06),0xffb703,0,0,.11,0,0); // RGB Подсветка сверху
+  add(g,B(.04,1.25,.29),0xd4af37,0,-.02,-.01); // Контакты
+});
+
+// Видеокарта (GPU)
+g=mk('gpu',-.35,-.15,-.72);
+add(g,B(2.4,.75,.35),0x1e2228); // Кожух
+add(g,B(2.35,.72,.05),0x333a42,0,0,-.16,.8,.2); // Бэкплейт
+add(g,B(1.2,.06,.08),0xd4af37,0,-.4,-.08); // PCIe разъем
+add(g,B(.04,.85,.35),0xdddddd,-1.23,0,0,.9,.1); // Пластина с портами (DisplayPort/HDMI)
+// Вентиляторы охлаждения
+fan(g,'z',.26,-.65,0,.19);
+fan(g,'z',.26,.65,0,.19);
+
+// Блок питания (PSU)
+g=mk('psu',-.5,-1.95,-.4);
+add(g,B(2.4,.9,1.4),0x22252a);
+add(g,Y(.38,.02),0x111111,0,0,.71).rotation.x=Math.PI/2; // Гриль вентилятора
+add(g,B(1.1,.35,.02),0xffb703,.5,0,.71); // Наклейка с характеристиками
+add(g,B(.5,.6,.08),0x111111,-1.1,0,-.62,.3,.6); // Разъем 220V и тумблер
+
+// Накопители
+g=mk('ssd',1.55,.2,-.8);add(g,B(.1,1,.6),0x2a3a5a,0,0,0,.7,.4);add(g,B(.02,.5,.4),0xdddddd,.06,0,0);
+g=mk('hdd',1.55,1.6,-.5);add(g,B(.4,1.4,.9),0xb0b7bd,0,0,0,.8,.3);add(g,B(.02,.7,.6),0x444444,.21,0,0);
+
+// Вентиляторы корпуса
+g=mk('fan1',1.9,-1.2,-.5);add(g,B(.1,1.1,1.1),0x1a1a1a);fan(g,'x',.5,-.06,0,0);
+g=mk('fan2',-1.85,1.6,-.5);add(g,B(.1,.85,.85),0x1a1a1a);fan(g,'x',.38,.06,0,0);
+
+// Батарейка CMOS
+g=mk('cmos',-.1,-.5,-.9);add(g,Y(.13,.04),0xe0e0e0,0,0,0,.9,.1).rotation.x=Math.PI/2;
+
+// Кабели
+cable('c24',[[.6,-1.5,-.3],[1.1,-1.2,-.3],[1.2,-.2,-.4],[.95,.4,-.85]],0xe0b400);
+cable('c8',[[-1.7,-1.5,-.5],[-1.75,0,-.5],[-1.6,1.9,-.7],[-.95,1.35,-.9]],0x333333);
+cable('cgpu',[[.3,-1.5,-.2],[.9,-1,-.3],[.95,-.6,-.5],[.9,-.15,-.6]],0xb23a48);
+cable('csata',[[1.5,-.3,-.8],[1.4,-.8,-.85],[1.1,-.9,-.9],[.7,-1,-.92]],0x3a86ff);
+cable('cfp',[[1.9,-1.9,-.9],[1.2,-1.7,-.95],[.7,-1.3,-.93],[.3,-1.15,-.93]],0x888888);
+
+order.forEach(id=>K[id].g.traverse(o=>{if(o.isMesh){o.userData.c=id;picks.push(o)}}));
+const air=new THREE.Group();S.add(air);air.visible=false;for(let i=0;i<6;i++)add(air,new THREE.ConeGeometry(.12,.35,8),0x7fd6ff);
+const EXT=order.filter(i=>K[i].ext),SLOTS=[...new Set(EXT.map(i=>K[i].slot))].sort((a,b)=>a.length-b.length);
+
+const lb={};order.forEach(id=>{const d=document.createElement('div');lb[id]=d;$('#lbls').appendChild(d)});
+let open=false,ex=false,sel=null,hov=null,pulse=null,learnId=null,mode='free',names=false,step=0,learnDone=false,T=null;const tws=[];
+const STEPS=['board','cpu','ram1','gpu','psu','ssd','hdd','cooler','c24'];
+const Q=[['Найди процессор.','cpu','процессор'],['Найди оперативную память.','ram','оперативная память'],['Найди видеокарту.','gpu','видеокарта'],['Найди блок питания.','psu','блок питания'],['Найди SSD.','ssd','SSD'],['Какой компонент выполняет вычисления?',['Процессор','Видеокарта','Блок питания'],0],['Какой компонент хранит данные постоянно?',['Оперативная память','SSD','Процессор'],1],['Где устанавливается видеокарта?',['В слот PCI Express','В DIMM-слот','В разъём SATA'],0],['Для чего нужна оперативная память?',['Для питания компьютера','Для быстрого доступа к данным, с которыми работает процессор','Для охлаждения процессора'],1],['Что отводит тепло от процессора?',['Батарейка CMOS','Блок питания','Система охлаждения'],2]];
+const tw=(d,f,done)=>tws.push({t:0,d,f,done});
+function mv(g,p,ry,s,d,cb){const p0=g.position.clone(),r0=g.rotation.y,s0=g.scale.x;tw(d,e=>{g.position.lerpVectors(p0,p,e);g.rotation.y=r0+(ry-r0)*e;g.scale.setScalar(s0+(s-s0)*e)},cb)}
+function go(p,t,d=900){const p0=C.position.clone(),t0=ctl.target.clone();tw(d,e=>{C.position.lerpVectors(p0,p,e);ctl.target.lerpVectors(t0,t,e)})}
+function focus(id){const b=new THREE.Box3().setFromObject(K[id].g),c=b.getCenter(new V()),s=b.getSize(new V()).length();go(c.clone().add(new V(.6,.4,1).normalize().multiplyScalar(Math.max(s*1.6,2.6))),c)}
+const VW={over:[[6.5,3.2,9]],front:[[11,.5,0]],back:[[-11,.5,0]],left:[[.01,.5,-11]],right:[[.01,.5,11]],top:[[.01,12,.01]]};
+const homePos=c=>ex?c.home.clone().add(c.exp):c.home.clone();
+let tt;function toast(m,ok){const t=$('#toast');t.textContent=m;t.className=ok?'ok':'err';t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',2800)}
+function setOpen(o,cb){open=o;const r0=door.rotation.y,to=o?-1.9:0;tw(800,e=>door.rotation.y=r0+(to-r0)*e,cb);$('#banner').style.display=o?'block':'none';$('#bOpen').textContent=o?'Закрыть корпус':'Открыть корпус'}
+const ensureOpen=cb=>open?cb():setOpen(true,cb);
+function refresh(){order.forEach(id=>{let v=0,c=0xffffff;if(id==sel){v=.6;c=0xffb703}else if(sel&&K[sel].rel.includes(id)){v=.35;c=0x22aacc}else if(id==hov){v=.35}
+K[id].g.traverse(o=>{if(o.isMesh){o.material.emissive.setHex(c);o.material.emissiveIntensity=v}})})}
+function updLbl(){order.forEach(id=>{lb[id].textContent=id==learnId?'▼ '+K[id].n:K[id].l;lb[id].style.display=names||id==learnId?'':'none'})}
+const sec=(t,x)=>`<h3>${t}</h3><p>${x}</p>`;
+const setP=h=>{$('#p').innerHTML=h;$('#p').scrollTop=0};
+function chips(){return mode=='teacher'?'<div class="bt">'+order.filter(i=>i!='ram2'&&i!='fan2').map(i=>`<button data-a="sel" data-id="${i}">${K[i].l}</button>`).join('')+'</div>':''}
+function home(){setP(chips()+'<h2>Информация</h2><p class="mu">Нажмите на компонент в 3D-модели, чтобы узнать, что это и для чего нужно.'+(mode=='teacher'?' В режиме «Учитель» компонент можно выбрать из списка.':'')+'</p>')}
+
+// Функция отображения карточки с фото
+function info(id){
+  const c=K[id];
+  let h=chips();
+  if(mode=='learn')h+=`<p class="mu">Шаг ${step+1} из ${STEPS.length}</p>`;
+  h+=`<h2>${c.n}</h2>`;
+  
+  if(IMGS[id]){
+    h+=`<div class="photo-box">
+      <a href="${IMGS[id]}" target="_blank" title="Открыть в полном размере">
+        <img src="${IMGS[id]}" alt="${c.n}" />
+      </a>
+      <div class="photo-cap">📷 Реальное изображение компонента</div>
+    </div>`;
+  }
+
+  h+=sec('Что это?',c.what)+sec('Для чего нужно?',c.why)+sec('Где находится?',c.where)+sec('С чем взаимодействует?',c.w)+'<div class="bt">';
+  if(c.ext&&c.st=='in')h+='<button class="pri" data-a="ex">Извлечь</button>';if(c.st=='out')h+='<button class="pri" data-a="in">Установить обратно</button>';
+  h+='<button data-a="more">Подробнее</button></div><div id="x"></div>';
+  if(mode=='learn')h+=`<button class="pri" data-a="next">${step+1<STEPS.length?'Следующий компонент':'Завершить обучение'}</button>`;
+  setP(h);
+}
+
+function select(id){if(mode=='test')return;if(mode=='learn'&&!learnDone&&id!=STEPS[step])return toast('Сейчас нужно найти: '+K[STEPS[step]].n,0);
+if(mode=='learn'&&id==STEPS[step]){learnDone=true;pulse=null}
+sel=id;refresh();air.visible=id=='fan1'||id=='fan2';ensureOpen(()=>{});focus(id);info(id)}
+function ext(id){const c=K[id];if(id=='cpu'&&K.cooler.st=='in')return toast('Сначала снимите систему охлаждения процессора.',0);
+ensureOpen(()=>{c.st='out';const k=EXT.indexOf(id);mv(c.g,homePos(c).add(new V(0,0,1.3)),0,1,600,()=>mv(c.g,new V(4.8+k%2*2.4,2.2-(k>>1)*1.4,1.4),.6,.8,900,()=>{focus(id);info(id)}));info(id)})}
+function inst(id){const c=K[id];if(id=='cooler'&&K.cpu.st=='out')return toast('Сначала установите процессор.',0);
+const h=homePos(c);c.st='in';mv(c.g,h.clone().add(new V(0,0,1.3)),0,1,700,()=>mv(c.g,h,0,1,600,()=>{toast('✓ Компонент установлен правильно!',1);info(id)}));focus(id)}
+function expl(){ex=!ex;$('#bEx').textContent=ex?'Собрать ПК':'Разобрать ПК';ensureOpen(()=>order.forEach(id=>{const c=K[id];if(c.st=='in')mv(c.g,homePos(c),0,1,900)}))}
+function showStep(){const id=STEPS[step];learnId=id;pulse=id;learnDone=false;sel=null;air.visible=false;refresh();updLbl();ensureOpen(()=>{});focus(id);
+setP(`<p class="mu">Шаг ${step+1} из ${STEPS.length}</p><h2>${K[id].n}</h2><p>${K[id].tip}</p><p><b>Найдите подсвеченный компонент со стрелкой и нажмите на него.</b></p>`)}
+function showQ(){const q=Q[T.i];T.m=false;setP(`<p class="mu">Задание ${T.i+1} из ${Q.length}</p><h2>${q[0]}</h2>`+(Array.isArray(q[1])?q[1].map((o,i)=>`<button data-a="ans" data-i="${i}" style="display:block;margin:6px 0;text-align:left">${o}</button>`).join(''):'<p>Нажмите на нужный компонент в 3D-модели.</p>')+'<div id="fb"></div>')}
+function answer(ok,wrong){const f=$('#fb');if(!f)return;if(ok){if(!T.m)T.s++;f.innerHTML='<p style="color:var(--ok)"><b>✓ Правильно!</b></p><button class="pri" data-a="tnext">'+(T.i+1<Q.length?'Дальше':'Показать результат')+'</button>'}else{T.m=true;f.innerHTML=`<p style="color:var(--er)"><b>✗ ${wrong}</b></p>`}}
+function setMode(m){mode=m;$$('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.m==m));learnId=null;pulse=null;sel=null;T=null;air.visible=false;refresh();updLbl();
+if(m=='learn'){step=0;showStep()}else if(m=='test'){T={i:0,s:0,m:false};ensureOpen(()=>{});go(new V(3.5,1.6,8.5),new V(.3,0,0));showQ()}else home()}
+function flow(){const n=(t,id)=>id?`<button data-a="sel" data-id="${id}">${t}</button>`:`<span>${t}</span>`,ch=a=>'<div class="fl">'+a.map(x=>n(...x)).join('<i>↓</i>')+'</div>';
+setP('<h2>Как компоненты взаимодействуют</h2><p class="mu">Нажмите на элемент схемы — он подсветится в модели.</p>'+sec('Обработка данных','')+ch([['Ввод данных'],['Процессор','cpu'],['Оперативная память','ram1'],['Видеокарта / другие устройства','gpu'],['Монитор']])+sec('Загрузка программ','')+ch([['SSD / HDD','ssd'],['Оперативная память','ram1'],['Процессор','cpu']]))}
+function reset(){ex=false;$('#bEx').textContent='Разобрать ПК';order.forEach(id=>{K[id].st='in';mv(K[id].g,K[id].home,0,1,600)});setOpen(false);go(new V(...VW.over[0]),new V(.5,0,0));names=false;$('#bNames').classList.remove('on');setMode('free')}
+
+$('#p').onclick=e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;
+if(a=='ex')ext(sel);else if(a=='in')$('#x').innerHTML='<p><b>Куда установить?</b></p>'+SLOTS.map(s=>`<button data-a="slot" data-s="${s}">${s}</button>`).join('');
+else if(a=='slot'){if(b.dataset.s==K[sel].slot)inst(sel);else toast('Этот компонент устанавливается в другое место.',0)}
+else if(a=='more')$('#x').innerHTML='<p><b>Связанные компоненты:</b></p>'+K[sel].rel.map(i=>`<button data-a="sel" data-id="${i}">${K[i].n}</button>`).join('');
+else if(a=='sel'){const m=mode,l=learnDone;if(m=='learn')learnDone=true;select(b.dataset.id);if(m=='learn')learnDone=l}
+else if(a=='next'){if(++step<STEPS.length)showStep();else{learnId=null;updLbl();sel=null;refresh();setP('<h2>Обучение пройдено!</h2><p>Вы познакомились с основными компонентами. Проверьте себя в тесте.</p><div class="bt"><button class="pri" data-a="gotest">Проверить знания</button></div>')}}
+else if(a=='gotest')setMode('test');
+else if(a=='ans'){const q=Q[T.i];answer(+b.dataset.i==q[2],'Неверно. Попробуй ещё раз.')}
+else if(a=='tnext'){if(++T.i<Q.length)showQ();else setP(`<h2>Результат: ${T.s} / ${Q.length}</h2><p>${T.s>=8?'Отлично!':'Повторите режим обучения и попробуйте снова.'}</p><div class="bt"><button class="pri" data-a="restart">Пройти ещё раз</button></div>`)}
+else if(a=='restart')setMode('test')};
+$$('#modes button').forEach(b=>b.onclick=()=>setMode(b.dataset.m)); $$
+('[data-s]').forEach(b=>b.onclick=()=>{$('#start').style.display='none';setMode(b.dataset.s)}); $$('[data-v]').forEach(b=>b.onclick=()=>go(new V(...VW[b.dataset.v][0]),new V(.5,0,0)));$('#bOpen').onclick=()=>{setOpen(!open);if(!open)return;go(new V(3.5,1.6,8.5),new V(.3,0,0))};
+$('#bEx').onclick=expl;$('#bReset').onclick=reset;$('#bFlow').onclick=flow;
+$('#bNames').onclick=e=>{names=!names;e.currentTarget.classList.toggle('on',names);updLbl()};
+$('#bHide').onclick=()=>document.body.classList.add('bare');$('#showui').onclick=()=>document.body.classList.remove('bare');
+
+const ray=new THREE.Raycaster(),cv=R.domElement;let d0=null;
+function pick(e){const r=cv.getBoundingClientRect();ray.setFromCamera(new THREE.Vector2((e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height)*2+1),C);const h=ray.intersectObjects(picks,false)[0];return h?h.object.userData.c:null}
+cv.onpointermove=e=>{const t=$('#tip');if(e.buttons){t.style.display='none';return}const id=pick(e);if(id!=hov){hov=id;refresh()}
+if(id){t.innerHTML=`<b>${K[id].n}</b><br>${K[id].tip}`;t.style.display='block';t.style.left=e.clientX+14+'px';t.style.top=e.clientY+14+'px'}else t.style.display='none'};
+cv.onpointerleave=()=>{hov=null;refresh();$('#tip').style.display='none'};
+cv.onpointerdown=e=>d0=[e.clientX,e.clientY];
+cv.onpointerup=e=>{if(!d0||Math.hypot(e.clientX-d0[0],e.clientY-d0[1])>5)return;const id=pick(e);if(!id)return;
+if(mode=='test'){const q=Q[T.i];if(Array.isArray(q[1]))return;const ok=id==q[1]||(q[1]=='ram'&&id.startsWith('ram'));sel=id;refresh();answer(ok,`Это не ${q[2]}. Попробуй ещё раз.`)}else select(id)};
+
+function rs(){const s=$('#stage'),w=s.clientWidth,h=s.clientHeight;R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix()}
+new ResizeObserver(rs).observe($('#stage'));rs(); const clk=new THREE.Clock(),Yv=new V(0,1,0),A=new V(1.7,-1.2,.9),Bv=new V(-1.7,1.6,.9),dir=Bv.clone().sub(A).normalize(),v=new V(); (function loop(){requestAnimationFrame(loop);const dt=Math.min(clk.getDelta(),.05),t=clk.elapsedTime; for(let i=tws.length-1;i>=0;i--){const w=tws[i];w.t+=dt*1000;const k=Math.min(1,w.t/w.d);w.f(k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2);if(k==1){tws.splice(i,1);w.done&&w.done()}} spin.forEach(([s,ax])=>s.rotation[ax]+=dt*8); if(air.visible)air.children.forEach((c,i)=>{c.position.copy(A).lerp(Bv,(i/6+t*.25)\%1);c.quaternion.setFromUnitVectors(Yv,dir)}); if(pulse){const e=.25+.3*Math.sin(t*6);K[pulse].g.traverse(o=>{if(o.isMesh){o.material.emissive.setHex(0xffb703);o.material.emissiveIntensity=e}})} ctl.update(); if(names\vert{}\vert{}learnId){const w=cv.clientWidth,h=cv.clientHeight;order.forEach(id=>{const l=lb[id];if(l.style.display=='none')return;K[id].g.getWorldPosition(v);v.project(C);l.style.left=(v.x*.5+.5)*w+'px';l.style.top=(-v.y*.5+.5)*h+'px'})} R.render(S,C)})(); updLbl();home();$$('#modes button')[0].classList.add('on');
+}
+</script></body></html>
