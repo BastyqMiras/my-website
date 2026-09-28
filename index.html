@@ -65,21 +65,21 @@ const M=(c,m=.4,r=.6,t)=>new THREE.MeshStandardMaterial({color:c,metalness:m,rou
 const add=(g,geo,c,x=0,y=0,z=0,m,r,t)=>{const o=new THREE.Mesh(geo,M(c,m,r,t));o.position.set(x,y,z);g.add(o);return o};
 const B=(w,h,d)=>new THREE.BoxGeometry(w,h,d),Y=(r,h)=>new THREE.CylinderGeometry(r,r,h,24);
 
-// URL с качественными фото компонентов
+// URL с рабочими фото компонентов Unsplash
 const IMGS={
-board:'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80',
-cpu:'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80',
-ram1:'https://images.unsplash.com/photo-1562976540-1502c2145186?auto=format&fit=crop&w=600&q=80',
-gpu:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Nvidia_GeForce_RTX_3080.jpg/640px-Nvidia_GeForce_RTX_3080.jpg',
-psu:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/ATX_Power_Supply.jpg/640px-ATX_Power_Supply.jpg',
-ssd:'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=600&q=80',
-hdd:'https://images.unsplash.com/photo-1531492746076-161ca9bcad58?auto=format&fit=crop&w=600&q=80',
-cooler:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Cpu-cooler-heatsink-fan.jpg/640px-Cpu-cooler-heatsink-fan.jpg',
-fan1:'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80',
-cmos:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/CR2032_battery.jpg/600px-CR2032_battery.jpg'
+board:'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600',
+cpu:'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=600',
+ram1:'https://images.unsplash.com/photo-1562976540-1502c2145186?w=600',
+gpu:'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=600',
+psu:'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=600',
+ssd:'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=600',
+hdd:'https://images.unsplash.com/photo-1531492746076-161ca9bcad58?w=600',
+cooler:'https://images.unsplash.com/photo-1555680202-c86f0e12f086?w=600',
+fan1:'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600',
+cmos:'https://images.unsplash.com/photo-1609921141835-710b7fa6e438?w=600'
 };
 
-// ---- данные: [название, подпись, подсказка, что это, для чего, где, с чем, связи, слот, разбор]
+// ---- данные компонентов ----
 const D={
 board:['Материнская плата','MB','Соединяет все компоненты между собой.','Основная плата компьютера, которая соединяет между собой процессор, оперативную память, накопители, видеокарту и другие устройства. Имеет цепи питания (VRM), чипсет и многочисленные порты ввода-вывода.','Обеспечивает взаимодействие всех узлов ПК и передачу данных между ними по скоростным шинам.','На задней стенке корпуса. К ней подключено почти всё остальное.','Процессор, RAM, видеокарта, накопители, блок питания.',['cpu','ram1','ram2','gpu','ssd','c24'],0,[0,0,0]],
 cpu:['Процессор (CPU)','CPU','Выполняет команды программ.','Процессор — "мозг" компьютера. Выполняет арифметические и логические операции, обрабатывает команды программ. Состоит из миллионов микроскопических транзисторов.','Выполняет вычисления, управляет операциями и выполнением инструкций ПО.','В сокете материнской платы, закрыт металической прижимной рамкой и кулером.','Материнская плата, кулер, оперативная память.',['board','cooler','ram1','ram2'],'Сокет процессора',[0,0,.7]],
@@ -87,7 +87,7 @@ ram1:['Оперативная память (RAM)','RAM','Временное хр
 gpu:['Видеокарта (GPU)','GPU','Формирует изображение для монитора.','Графический ускоритель со собственным процессором (GPU) и быстрой видеопамятью (VRAM). Рассчитывает 3D-графику и выводит видеосигнал.','Используется для обработки графики, игр, 3D-моделирования и нейросетей.','В верхнем слоте PCI Express x16 под процессором.','Материнская плата (PCI Express), блок питания, монитор.',['board','psu','cgpu'],'Слот PCI Express x16',[0,-.3,1.6]],
 psu:['Блок питания (PSU)','PSU','Питает все компоненты компьютера.','Импульсный источник питания, преобразующий высокое переменное напряжение из розетки (220В) в постоянное низкое напряжение (12В, 5В, 3.3В).','Обеспечивает безопасное и стабильное электрическое питание всех узлов ПК.','Внизу корпуса, в изолированном отсеке (кожухе).','Все компоненты — через кабели питания.',['board','gpu','c24','c8'],'Отсек блока питания',[0,0,.9]],
 ssd:['SSD NVMe / SATA-накопитель','SSD','Быстрое хранение системы и файлов.','Твердотельный накопитель на основе микросхем флеш-памяти NAND. Не имеет подвижных механических частей, за счет чего работает в десятки раз быстрее жестких дисков.','Хранит ОС, программы и данные постоянным образом.','В слоте M.2 на материнской плате или в корзине 2.5".','Материнская плата, блок питания.',['csata','board','psu'],'Слот M.2 / Отсек 2,5″',[0,-.2,1]],
-hdd:['Жёсткий диск (HDD)','HDD','Долговременное хранение больших объёмов данных.','Магнитный накопитель с вращающимися шпинделями и считывающими головками. Позволяет недорого хранить больший объем информации.','Хранит резервные копии, медиафайлы и архивы.','В корзине накопителей у передней стенки корпуса.','Материнская плата (SATA), блок питания.',['csata','board','psu'],'Отсек 3,5″ для накопителя',[0,.1,.6]],
+hdd:['Жёсткий диск (HDD)','HDD','Долговременное хранение больших объёмов данных.','Магнитный накопитель с вращающимися шпинделями и считывающими головками. Позволяет недорого хранить сборники данных.','Хранит резервные копии, медиафайлы и архивы.','В корзине накопителей у передней стенки корпуса.','Материнская плата (SATA), блок питания.',['csata','board','psu'],'Отсек 3,5″ для накопителя',[0,.1,.6]],
 cooler:['Система охлаждения (Кулер)','Кулер','Отводит тепло от процессора.','Конструкция из медного основания, тепловых трубок и алюминиевых пластин (радиатора), обдуваемая вентилятором.','Эффективно рассеивает тепло, выделяемое процессором во время работы.','Установлена прямо поверх процессора.','Процессор, материнская плата (разъём CPU_FAN).',['cpu','fan1','fan2'],'Крепление на сокете процессора',[0,.7,1.6]],
 fan1:['Корпусной вентилятор','Вентилятор','Обеспечивает циркуляцию воздуха.','Вентилятор для выдува горячего или вдува холодного воздуха. Создает сквозной воздушный поток внутри корпуса.','Предотвращает перегрев всех внутренних компонентов системного блока.','Спереди (впуск) и на задней стенке (выпуск).','Кулер, видеокарта, корпус.',['cooler','cpu','gpu'],0,[0,0,1]],
 cmos:['Батарейка CMOS (CR2032)','CMOS','Питает энергонезависимую память BIOS.','Литиевая батарейка напряжением 3 Вольта. Питает микросхему CMOS-памяти и встроенные часы (RTC).','Благодаря ей ПК сохраняет настройки BIOS и точное время даже после отключения от розетки.','На материнской плате около слотов PCI Express.','Материнская плата.',['board'],'Гнездо батарейки на плате',[0,0,1]],
@@ -107,90 +107,67 @@ function cable(id,pts,col){const P=pts.map(p=>new V(...p)),m=P[1].clone().lerp(P
 const shell=new THREE.Group();S.add(shell);
 add(shell,B(4.2,.08,2.4),0x2b3a44,0,2.6,.02);add(shell,B(4.2,.08,2.4),0x2b3a44,0,-2.6,.02);add(shell,B(4.2,5.28,.08),0x27343d,0,0,-1.16);
 add(shell,B(.1,5.2,2.4),0x1f2b33,2.05,0,.02);add(shell,B(.1,5.2,2.4),0x2b3a44,-2.05,0,.02);add(shell,B(.02,.3,.9),0xffb703,2.11,2,0);
-// Кожух блока питания
 add(shell,B(2.5,1.1,2.2),0x18242c,-.8,-1.95,0);
 [1.3,.3].forEach(y=>add(shell,B(.12,.3,.6),0x111111,-2.06,y,-.6));
 for(let i=0;i<10;i++)for(let j=0;j<3;j++)add(shell,B(.03,.03,.09),0x0e1a20,2.111,1.7-i*.28,-.3+j*.28,.2,.6);
 add(shell,Y(.14,.03),0x1a232a,2.1,-1.8,0,.4,.4).rotation.z=Math.PI/2;
 const door=new THREE.Group();door.position.set(-2.1,0,1.2);add(door,B(4.2,5.2,.05),0x88aacc,2.1,0,0,.1,.2,.35);shell.add(door);
 
-// --- ДЕТАЛИЗИРОВАННЫЕ КОМПОНЕНТЫ ---
-// Материнская плата
+// --- КОМПОНЕНТЫ ---
 let g=mk('board',-.35,.5,-1);
-add(g,B(2.7,3.4,.06),0x1a2e22); // Текстолит
-// Радиаторы VRM (питания)
+add(g,B(2.7,3.4,.06),0x1a2e22);
 add(g,B(.4,1.1,.3),0x333d45,-1,.8,.15,.8,.2);
 add(g,B(.8,.35,.3),0x333d45,-.3,1.4,.15,.8,.2);
-// Чипсет с радиатором
 add(g,B(.6,.6,.12),0x445566,.5,-.8,.08,.7,.3);
-// Слоты PCI Express
-add(g,B(1.8,.08,.12),0x111111,0,-.15,.07); // PCIe x16 главный
-add(g,B(1.2,.06,.1),0x111111,-.3,-.55,.06); // PCIe x1
-add(g,B(1.8,.08,.12),0x222222,0,-.95,.07); // PCIe x16 второй
-// Накопитель M.2 NVMe с радиатором на самой плате
+add(g,B(1.8,.08,.12),0x111111,0,-.15,.07);
+add(g,B(1.2,.06,.1),0x111111,-.3,-.55,.06);
+add(g,B(1.8,.08,.12),0x222222,0,-.95,.07);
 add(g,B(.8,.2,.05),0x222222,.2,.15,.06);
 add(g,B(.7,.18,.04),0xaa2222,.2,.15,.09,.6,.4);
-// Порты ввода-вывода (Задняя панель)
 add(g,B(.2,2.2,.35),0xcccccc,-1.25,.5,.18,.9,.1);
-// Конденсаторы и слоты DIMM
 for(let i=0;i<6;i++)add(g,Y(.035,.1),0x888888,-.75+i*.07,1.1,.08,.8,.2);
 for(let i=0;i<4;i++)add(g,B(.06,1.5,.12),0x111111,.45+i*.12,.8,.07);
 
-// Процессор (CPU)
 g=mk('cpu',-.6,1.1,-.95);
-add(g,B(.58,.58,.04),0x225533,0,0,-.02,.2,.7); // Подложка
-add(g,B(.48,.48,.045),0xd0d5dd,0,0,.025,.9,.1); // Металлическая крышка (IHS)
-add(g,B(.06,.06,.012),0xffb703,-.21,-.21,.05,.3,.4).rotation.z=Math.PI/4; // Золотой треугольник-ключ
+add(g,B(.58,.58,.04),0x225533,0,0,-.02,.2,.7);
+add(g,B(.48,.48,.045),0xd0d5dd,0,0,.025,.9,.1);
+add(g,B(.06,.06,.012),0xffb703,-.21,-.21,.05,.3,.4).rotation.z=Math.PI/4;
 
-// Кулер процессора (Башенный)
 g=mk('cooler',-.6,1.1,-.62);
-add(g,B(.8,.8,.12),0xc87d55,0,0,0,.9,.1); // Медное основание
-// Медные тепловые трубки
-for(let i=0;i<4;i++){
-  const ht=add(g,Y(.025,.65),0xd88d65,-.25+i*.16,.1,.1,.9,.2);
-  ht.rotation.x=Math.PI/2;
-}
-// Алюминиевые пластины радиатора
+add(g,B(.8,.8,.12),0xc87d55,0,0,0,.9,.1);
+for(let i=0;i<4;i++){const ht=add(g,Y(.025,.65),0xd88d65,-.25+i*.16,.1,.1,.9,.2);ht.rotation.x=Math.PI/2;}
 for(let i=0;i<12;i++)add(g,B(.78,.78,.018),0xaaaaaa,0,0,.05+i*.035,.7,.3);
 fan(g,'z',.28,0,0,.5);
 
-// Оперативная память (RAM 1 & 2)
 [['ram1',.57],['ram2',.69]].forEach(([id,x])=>{
   g=mk(id,x,1.3,-.82);
-  add(g,B(.05,1.35,.28),0x111111,0,0,0,.5,.4); // Радиатор планки
-  add(g,B(.06,1.32,.06),0xffb703,0,0,.11,0,0); // RGB Подсветка сверху
-  add(g,B(.04,1.25,.29),0xd4af37,0,-.02,-.01); // Контакты
+  add(g,B(.05,1.35,.28),0x111111,0,0,0,.5,.4);
+  add(g,B(.06,1.32,.06),0xffb703,0,0,.11,0,0);
+  add(g,B(.04,1.25,.29),0xd4af37,0,-.02,-.01);
 });
 
-// Видеокарта (GPU)
 g=mk('gpu',-.35,-.15,-.72);
-add(g,B(2.4,.75,.35),0x1e2228); // Кожух
-add(g,B(2.35,.72,.05),0x333a42,0,0,-.16,.8,.2); // Бэкплейт
-add(g,B(1.2,.06,.08),0xd4af37,0,-.4,-.08); // PCIe разъем
-add(g,B(.04,.85,.35),0xdddddd,-1.23,0,0,.9,.1); // Пластина с портами (DisplayPort/HDMI)
-// Вентиляторы охлаждения
+add(g,B(2.4,.75,.35),0x1e2228);
+add(g,B(2.35,.72,.05),0x333a42,0,0,-.16,.8,.2);
+add(g,B(1.2,.06,.08),0xd4af37,0,-.4,-.08);
+add(g,B(.04,.85,.35),0xdddddd,-1.23,0,0,.9,.1);
 fan(g,'z',.26,-.65,0,.19);
 fan(g,'z',.26,.65,0,.19);
 
-// Блок питания (PSU)
 g=mk('psu',-.5,-1.95,-.4);
 add(g,B(2.4,.9,1.4),0x22252a);
-add(g,Y(.38,.02),0x111111,0,0,.71).rotation.x=Math.PI/2; // Гриль вентилятора
-add(g,B(1.1,.35,.02),0xffb703,.5,0,.71); // Наклейка с характеристиками
-add(g,B(.5,.6,.08),0x111111,-1.1,0,-.62,.3,.6); // Разъем 220V и тумблер
+add(g,Y(.38,.02),0x111111,0,0,.71).rotation.x=Math.PI/2;
+add(g,B(1.1,.35,.02),0xffb703,.5,0,.71);
+add(g,B(.5,.6,.08),0x111111,-1.1,0,-.62,.3,.6);
 
-// Накопители
 g=mk('ssd',1.55,.2,-.8);add(g,B(.1,1,.6),0x2a3a5a,0,0,0,.7,.4);add(g,B(.02,.5,.4),0xdddddd,.06,0,0);
 g=mk('hdd',1.55,1.6,-.5);add(g,B(.4,1.4,.9),0xb0b7bd,0,0,0,.8,.3);add(g,B(.02,.7,.6),0x444444,.21,0,0);
 
-// Вентиляторы корпуса
 g=mk('fan1',1.9,-1.2,-.5);add(g,B(.1,1.1,1.1),0x1a1a1a);fan(g,'x',.5,-.06,0,0);
 g=mk('fan2',-1.85,1.6,-.5);add(g,B(.1,.85,.85),0x1a1a1a);fan(g,'x',.38,.06,0,0);
 
-// Батарейка CMOS
 g=mk('cmos',-.1,-.5,-.9);add(g,Y(.13,.04),0xe0e0e0,0,0,0,.9,.1).rotation.x=Math.PI/2;
 
-// Кабели
 cable('c24',[[.6,-1.5,-.3],[1.1,-1.2,-.3],[1.2,-.2,-.4],[.95,.4,-.85]],0xe0b400);
 cable('c8',[[-1.7,-1.5,-.5],[-1.75,0,-.5],[-1.6,1.9,-.7],[-.95,1.35,-.9]],0x333333);
 cable('cgpu',[[.3,-1.5,-.2],[.9,-1,-.3],[.95,-.6,-.5],[.9,-.15,-.6]],0xb23a48);
@@ -222,7 +199,7 @@ const setP=h=>{$('#p').innerHTML=h;$('#p').scrollTop=0};
 function chips(){return mode=='teacher'?'<div class="bt">'+order.filter(i=>i!='ram2'&&i!='fan2').map(i=>`<button data-a="sel" data-id="${i}">${K[i].l}</button>`).join('')+'</div>':''}
 function home(){setP(chips()+'<h2>Информация</h2><p class="mu">Нажмите на компонент в 3D-модели, чтобы узнать, что это и для чего нужно.'+(mode=='teacher'?' В режиме «Учитель» компонент можно выбрать из списка.':'')+'</p>')}
 
-// Функция отображения карточки с фото
+// Функция отображения карточки с фото и навигацией
 function info(id){
   const c=K[id];
   let h=chips();
@@ -231,7 +208,7 @@ function info(id){
   
   if(IMGS[id]){
     h+=`<div class="photo-box">
-      <a href="${IMGS[id]}" target="_blank" title="Открыть в полном размере">
+      <a href="${IMGS[id]}" target="_blank" title="Открыть фото">
         <img src="${IMGS[id]}" alt="${c.n}" />
       </a>
       <div class="photo-cap">📷 Реальное изображение компонента</div>
@@ -241,7 +218,14 @@ function info(id){
   h+=sec('Что это?',c.what)+sec('Для чего нужно?',c.why)+sec('Где находится?',c.where)+sec('С чем взаимодействует?',c.w)+'<div class="bt">';
   if(c.ext&&c.st=='in')h+='<button class="pri" data-a="ex">Извлечь</button>';if(c.st=='out')h+='<button class="pri" data-a="in">Установить обратно</button>';
   h+='<button data-a="more">Подробнее</button></div><div id="x"></div>';
-  if(mode=='learn')h+=`<button class="pri" data-a="next">${step+1<STEPS.length?'Следующий компонент':'Завершить обучение'}</button>`;
+  
+  // Кнопки Назад и Продолжить
+  h+=`<div class="bt" style="margin-top:15px; border-top:1px solid var(--ln); padding-top:10px;">
+    <button data-a="home">⬅ Назад к списку</button>
+    <button class="pri" data-a="nextcomp">Продолжить ➡</button>
+  </div>`;
+
+  if(mode=='learn')h+=`<button class="pri" data-a="next" style="margin-top:8px;width:100%">${step+1<STEPS.length?'Следующий компонент':'Завершить обучение'}</button>`;
   setP(h);
 }
 
@@ -259,20 +243,32 @@ function showQ(){const q=Q[T.i];T.m=false;setP(`<p class="mu">Задание ${T
 function answer(ok,wrong){const f=$('#fb');if(!f)return;if(ok){if(!T.m)T.s++;f.innerHTML='<p style="color:var(--ok)"><b>✓ Правильно!</b></p><button class="pri" data-a="tnext">'+(T.i+1<Q.length?'Дальше':'Показать результат')+'</button>'}else{T.m=true;f.innerHTML=`<p style="color:var(--er)"><b>✗ ${wrong}</b></p>`}}
 function setMode(m){mode=m;$$('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.m==m));learnId=null;pulse=null;sel=null;T=null;air.visible=false;refresh();updLbl();
 if(m=='learn'){step=0;showStep()}else if(m=='test'){T={i:0,s:0,m:false};ensureOpen(()=>{});go(new V(3.5,1.6,8.5),new V(.3,0,0));showQ()}else home()}
+
 function flow(){const n=(t,id)=>id?`<button data-a="sel" data-id="${id}">${t}</button>`:`<span>${t}</span>`,ch=a=>'<div class="fl">'+a.map(x=>n(...x)).join('<i>↓</i>')+'</div>';
-setP('<h2>Как компоненты взаимодействуют</h2><p class="mu">Нажмите на элемент схемы — он подсветится в модели.</p>'+sec('Обработка данных','')+ch([['Ввод данных'],['Процессор','cpu'],['Оперативная память','ram1'],['Видеокарта / другие устройства','gpu'],['Монитор']])+sec('Загрузка программ','')+ch([['SSD / HDD','ssd'],['Оперативная память','ram1'],['Процессор','cpu']]))}
+setP('<h2>Как компоненты взаимодействуют</h2><p class="mu">Нажмите на элемент схемы — он подсветится в модели.</p>'+sec('Обработка данных','')+ch([['Ввод данных'],['Процессор','cpu'],['Оперативная память','ram1'],['Видеокарта / другие устройства','gpu'],['Монитор']])+sec('Загрузка программ','')+ch([['SSD / HDD','ssd'],['Оперативная память','ram1'],['Процессор','cpu']])+'<div style="margin-top:15px"><button data-a="home" class="pri">⬅ Назад в меню</button></div>')}
+
 function reset(){ex=false;$('#bEx').textContent='Разобрать ПК';order.forEach(id=>{K[id].st='in';mv(K[id].g,K[id].home,0,1,600)});setOpen(false);go(new V(...VW.over[0]),new V(.5,0,0));names=false;$('#bNames').classList.remove('on');setMode('free')}
+
+function nextComponent(){
+  const list = ['board','cpu','ram1','gpu','psu','ssd','hdd','cooler','fan1','cmos'];
+  let idx = list.indexOf(sel);
+  let nextId = list[(idx + 1) % list.length];
+  select(nextId);
+}
 
 $('#p').onclick=e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;
 if(a=='ex')ext(sel);else if(a=='in')$('#x').innerHTML='<p><b>Куда установить?</b></p>'+SLOTS.map(s=>`<button data-a="slot" data-s="${s}">${s}</button>`).join('');
 else if(a=='slot'){if(b.dataset.s==K[sel].slot)inst(sel);else toast('Этот компонент устанавливается в другое место.',0)}
 else if(a=='more')$('#x').innerHTML='<p><b>Связанные компоненты:</b></p>'+K[sel].rel.map(i=>`<button data-a="sel" data-id="${i}">${K[i].n}</button>`).join('');
 else if(a=='sel'){const m=mode,l=learnDone;if(m=='learn')learnDone=true;select(b.dataset.id);if(m=='learn')learnDone=l}
+else if(a=='home')home();
+else if(a=='nextcomp')nextComponent();
 else if(a=='next'){if(++step<STEPS.length)showStep();else{learnId=null;updLbl();sel=null;refresh();setP('<h2>Обучение пройдено!</h2><p>Вы познакомились с основными компонентами. Проверьте себя в тесте.</p><div class="bt"><button class="pri" data-a="gotest">Проверить знания</button></div>')}}
 else if(a=='gotest')setMode('test');
 else if(a=='ans'){const q=Q[T.i];answer(+b.dataset.i==q[2],'Неверно. Попробуй ещё раз.')}
 else if(a=='tnext'){if(++T.i<Q.length)showQ();else setP(`<h2>Результат: ${T.s} / ${Q.length}</h2><p>${T.s>=8?'Отлично!':'Повторите режим обучения и попробуйте снова.'}</p><div class="bt"><button class="pri" data-a="restart">Пройти ещё раз</button></div>`)}
 else if(a=='restart')setMode('test')};
+
 $$('#modes button').forEach(b=>b.onclick=()=>setMode(b.dataset.m)); $$
 ('[data-s]').forEach(b=>b.onclick=()=>{$('#start').style.display='none';setMode(b.dataset.s)}); $$('[data-v]').forEach(b=>b.onclick=()=>go(new V(...VW[b.dataset.v][0]),new V(.5,0,0)));$('#bOpen').onclick=()=>{setOpen(!open);if(!open)return;go(new V(3.5,1.6,8.5),new V(.3,0,0))};
 $('#bEx').onclick=expl;$('#bReset').onclick=reset;$('#bFlow').onclick=flow;
@@ -289,5 +285,6 @@ cv.onpointerup=e=>{if(!d0||Math.hypot(e.clientX-d0[0],e.clientY-d0[1])>5)return;
 if(mode=='test'){const q=Q[T.i];if(Array.isArray(q[1]))return;const ok=id==q[1]||(q[1]=='ram'&&id.startsWith('ram'));sel=id;refresh();answer(ok,`Это не ${q[2]}. Попробуй ещё раз.`)}else select(id)};
 
 function rs(){const s=$('#stage'),w=s.clientWidth,h=s.clientHeight;R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix()}
-new ResizeObserver(rs).observe($('#stage'));rs(); const clk=new THREE.Clock(),Yv=new V(0,1,0),A=new V(1.7,-1.2,.9),Bv=new V(-1.7,1.6,.9),dir=Bv.clone().sub(A).normalize(),v=new V(); (function loop(){requestAnimationFrame(loop);const dt=Math.min(clk.getDelta(),.05),t=clk.elapsedTime; for(let i=tws.length-1;i>=0;i--){const w=tws[i];w.t+=dt*1000;const k=Math.min(1,w.t/w.d);w.f(k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2);if(k==1){tws.splice(i,1);w.done&&w.done()}} spin.forEach(([s,ax])=>s.rotation[ax]+=dt*8); if(air.visible)air.children.forEach((c,i)=>{c.position.copy(A).lerp(Bv,(i/6+t*.25)%1);c.quaternion.setFromUnitVectors(Yv,dir)}); if(pulse){const e=.25+.3*Math.sin(t*6);K[pulse].g.traverse(o=>{if(o.isMesh){o.material.emissive.setHex(0xffb703);o.material.emissiveIntensity=e}})} ctl.update(); if(names||learnId){const w=cv.clientWidth,h=cv.clientHeight;order.forEach(id=>{const l=lb[id];if(l.style.display=='none')return;K[id].g.getWorldPosition(v);v.project(C);l.style.left=(v.x*.5+.5)*w+'px';l.style.top=(-v.y*.5+.5)*h+'px'})} R.render(S,C)})(); updLbl();home();$$('#modes button')[0].classList.add('on');}
+new ResizeObserver(rs).observe($('#stage'));rs(); const clk=new THREE.Clock(),Yv=new V(0,1,0),A=new V(1.7,-1.2,.9),Bv=new V(-1.7,1.6,.9),dir=Bv.clone().sub(A).normalize(),v=new V(); (function loop(){requestAnimationFrame(loop);const dt=Math.min(clk.getDelta(),.05),t=clk.elapsedTime; for(let i=tws.length-1;i>=0;i--){const w=tws[i];w.t+=dt*1000;const k=Math.min(1,w.t/w.d);w.f(k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2);if(k==1){tws.splice(i,1);w.done&&w.done()}} spin.forEach(([s,ax])=>s.rotation[ax]+=dt*8); if(air.visible)air.children.forEach((c,i)=>{c.position.copy(A).lerp(Bv,(i/6+t*.25)\%1);c.quaternion.setFromUnitVectors(Yv,dir)}); if(pulse){const e=.25+.3*Math.sin(t*6);K[pulse].g.traverse(o=>{if(o.isMesh){o.material.emissive.setHex(0xffb703);o.material.emissiveIntensity=e}})} ctl.update(); if(names\vert{}\vert{}learnId){const w=cv.clientWidth,h=cv.clientHeight;order.forEach(id=>{const l=lb[id];if(l.style.display=='none')return;K[id].g.getWorldPosition(v);v.project(C);l.style.left=(v.x*.5+.5)*w+'px';l.style.top=(-v.y*.5+.5)*h+'px'})} R.render(S,C)})(); updLbl();home();$$('#modes button')[0].classList.add('on');
+}
 </script></body></html>
